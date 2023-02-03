@@ -25,7 +25,7 @@ $product=$stm->fetch(PDO::FETCH_ASSOC);
             <div class="card">
                 <div class="card-header">Prekė: <?=$product['name']?></div>
                 <div class="card-body">
-                   Prekės aprašymas: <?=$product['description']?><br>
+                   Prekės aprašymas: <?= $product['description']?><br>
                     Prekės kaina:   <?=$product['price']?><br>
                     Prekės kaina su PVM: <?=$product['price_vat']?><br>
 

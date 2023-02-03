@@ -1,9 +1,14 @@
 <?php
 
 require_once 'db.php';
+
+if (isset($_GET['delete'])){
+    $stm=$db->prepare("DELETE FROM `products` WHERE id=?");
+    $stm->execute([$_GET['delete']]);
+}
+
 $result=$db->query('SELECT *, round(price*1.21, 2) as price_vat FROM products ORDER BY price ASC');
 $products=$result->fetchAll(PDO::FETCH_ASSOC);
-
 
 ?>
 <!doctype html>
@@ -23,6 +28,7 @@ $products=$result->fetchAll(PDO::FETCH_ASSOC);
             <div class="card">
                 <div class="card-header">Prekiu sarasas</div>
                 <div class="card-body">
+                    <a href="new.php" class="btn btn-success float-end">Pridėti naują įrašą</a>
                     <table class="table">
 
                     <thead>
@@ -30,6 +36,8 @@ $products=$result->fetchAll(PDO::FETCH_ASSOC);
                         <th>Pavadinimas</th>
                         <th>Kaina</th>
                         <th>Kaia su PVM</th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -42,6 +50,8 @@ $products=$result->fetchAll(PDO::FETCH_ASSOC);
                             <td><?=$product['price']?></td>
                             <td><?=$product['price_vat']?></td>
                             <td><a class="btn btn-success" href="more.php?id=<?=$product['id']?>">Plačiau</a> </td>
+                            <td><a class="btn btn-info" href="update.php?id=<?=$product['id']?>">Redaguoti</a> </td>
+                            <td><a class="btn btn-danger" href="index.php?delete=<?=$product['id']?>">Ištrinti</a> </td>
                         </tr>
                     <?php } ?>
                     </tbody>
