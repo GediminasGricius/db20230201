@@ -4,12 +4,15 @@ require_once 'db.php';
 
 
 if (isset($_POST['add'])){
-    $stm=$db->prepare("INSERT INTO products (name, price, description) VALUES (?,?,?)");
-    $stm->execute([$_POST['name'], $_POST['price'], $_POST['description']]);
+    $stm=$db->prepare("INSERT INTO products (name, price, description, category_id) VALUES (?,?,?, ?)");
+    $stm->execute([$_POST['name'], $_POST['price'], $_POST['description'], $_POST['category_id']]);
     header("location: index.php");
     die();
 }
 
+$stm=$db->prepare("SELECT id,name FROM categories");
+$stm->execute([]);
+$categories=$stm->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -38,6 +41,15 @@ if (isset($_POST['add'])){
                       <div class="mb-3">
                           <label class="form-label">Kaina:</label>
                           <input type="text" class="form-control" name="price">
+                      </div>
+                      <div class="mb-3">
+                          <label class="form-label">Kategorija:</label>
+                          <select class="form-control" name="category_id">
+                              <?php foreach ($categories as $category){ ?>
+                                  <option value="<?=$category['id']?>"><?=$category['name']?></option>
+                              <?php } ?>
+
+                          </select>
                       </div>
                       <div class="mb-3">
                           <label class="form-label">Aprašymas:</label>

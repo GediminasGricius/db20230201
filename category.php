@@ -7,16 +7,10 @@ if (isset($_GET['delete'])){
     $stm->execute([$_GET['delete']]);
 }
 
-//$result=$db->query('SELECT *, round(price*1.21, 2) as price_vat FROM products ORDER BY price ASC');
-$result=$db->query('
-SELECT 
-    `products`.*, 
-    `categories`.`name` as `category_name`, 
-    round(price*1.21, 2) as price_vat 
-FROM `products` 
-    LEFT JOIN `categories` ON `products`.`category_id`=`categories`.`id` 
-ORDER BY price ASC; ');
-$products=$result->fetchAll(PDO::FETCH_ASSOC);
+$stm=$db->prepare('SELECT *, round(price*1.21, 2) as price_vat FROM products WHERE category_id=? ORDER BY price ASC');
+$stm->execute([$_GET['id']]);
+$products=$stm->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 ?>
@@ -47,7 +41,6 @@ $products=$result->fetchAll(PDO::FETCH_ASSOC);
                         <th>Pavadinimas</th>
                         <th>Kaina</th>
                         <th>Kaia su PVM</th>
-                        <th>Kategorija</th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -61,7 +54,6 @@ $products=$result->fetchAll(PDO::FETCH_ASSOC);
 
                             <td><?=$product['price']?></td>
                             <td><?=$product['price_vat']?></td>
-                            <td><?=$product['category_name']?></td>
                             <td><a class="btn btn-success" href="more.php?id=<?=$product['id']?>">Plačiau</a> </td>
                             <td><a class="btn btn-info" href="update.php?id=<?=$product['id']?>">Redaguoti</a> </td>
                             <td><a class="btn btn-danger" href="index.php?delete=<?=$product['id']?>">Ištrinti</a> </td>

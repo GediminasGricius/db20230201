@@ -7,11 +7,15 @@ $stm->execute([$id]);
 $product=$stm->fetch(PDO::FETCH_ASSOC);
 
 if (isset($_POST['update'])){
-    $stm=$db->prepare("UPDATE `products` SET name=?, price=?, description=? WHERE id=?");
-    $stm->execute([$_POST['name'], $_POST['price'], $_POST['description'], $id]);
+    $stm=$db->prepare("UPDATE `products` SET name=?, price=?, description=?, category_id=? WHERE id=?");
+    $stm->execute([$_POST['name'], $_POST['price'], $_POST['description'], $_POST['category_id'], $id]);
     header("location: index.php");
     die();
 }
+
+$stm=$db->prepare("SELECT id,name FROM categories");
+$stm->execute([]);
+$categories=$stm->fetchAll(PDO::FETCH_ASSOC);
 
 
 ?>
@@ -42,6 +46,21 @@ if (isset($_POST['update'])){
                       <div class="mb-3">
                           <label class="form-label">Kaina:</label>
                           <input type="text" class="form-control" name="price" value="<?=$product['price']?>">
+                      </div>
+                      <div class="mb-3">
+                          <label class="form-label">Kategorija:</label>
+
+                          <select class="form-control" name="category_id">
+                              <?php foreach ($categories as $category){ ?>
+                                  <option
+                                          value="<?=$category['id']?>"
+                                          <?=$product['category_id']==$category['id']?'selected':''?>
+                                  >
+                                      <?=$category['name']?>
+                                  </option>
+                              <?php } ?>
+
+                          </select>
                       </div>
                       <div class="mb-3">
                           <label class="form-label">Aprašymas:</label>
